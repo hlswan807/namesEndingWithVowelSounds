@@ -17,12 +17,12 @@ public class NameEntry {
         this.occurrences = occurrences;
     }
 
-    public boolean endsWithVowel() {
+    public boolean endsWithVowelSound() {
         String lowerName = name.toLowerCase();
         char lastChar = Character.toLowerCase(name.charAt(name.length() - 1));
 
         if (lowerName.endsWith("ne") || lowerName.endsWith("re") || lowerName.endsWith("phe")) {
-            System.out.println("Found names ending with a fake vowel: " + name + " with " + occurrences + " occurrences.");
+            //System.out.println("Found names ending with a fake vowel: " + name + " with " + occurrences + " occurrences.");
             return false;
         }
 

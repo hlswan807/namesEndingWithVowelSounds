@@ -3,13 +3,15 @@ package org.example;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public class NameReader {
-    private static int totalCount;
-    private static int vowelEndingCount;
-    private static int femaleNamesCount;
+    public static int vowelEndingCount;
+    public static int totalCount;
+    public static int femaleNamesCount;
 
     public static List<NameEntry> readNameFile(String fileName) {
         List<NameEntry> nameEntries = new ArrayList<>();
@@ -36,11 +38,11 @@ public class NameReader {
 
     private static void count(List<NameEntry> nameEntries) {
         for (NameEntry entry : nameEntries) {
-            if (entry.endsWithVowel() && entry.isFemale()) {
+            if (entry.endsWithVowelSound() && entry.isFemale()) {
                 vowelEndingCount += entry.getOccurrences();
                 totalCount += entry.getOccurrences();
                 femaleNamesCount += entry.getOccurrences();
-            } else if (entry.endsWithVowel()) {
+            } else if (entry.endsWithVowelSound()) {
                 vowelEndingCount += entry.getOccurrences();
                 totalCount += entry.getOccurrences();
             } else {
@@ -51,13 +53,27 @@ public class NameReader {
 
 
     public static void main(String[] args) {
-        String fileName = "src/main/resources/names/yob1880.txt";
-        List<NameEntry> nameEntries = readNameFile(fileName);
+        String folderPath = "src/main/resources/names";
 
         // Count occurrences for names ending with a vowel
-        count(nameEntries);
+        try {
+            // Iterate over each file in the directory
+            Files.list(Paths.get(folderPath)).forEach(filePath -> {
+                if (Files.isRegularFile(filePath)) {
+                    List<NameEntry> nameEntries = readNameFile(filePath.toString());
 
-        System.out.println("Total occurrences of names ending with a vowel sound: " + vowelEndingCount);
+                    // Count occurrences for names ending with a vowel sound
+                    count(nameEntries);
+                }
+            });
+
+            System.out.println("Total names counted: " + totalCount);
+            System.out.println("Total occurrences of names ending with a vowel sound across all years: " + vowelEndingCount);
+        } catch (IOException e) {
+            System.err.println("Error reading files from folder: " + e.getMessage());
+        }
+
+        System.out.println("Total names counted: " + totalCount);
         System.out.println("Total occurrences of names NOT ending with a vowel sound: " + (totalCount - vowelEndingCount));
         System.out.println("Percentage of names ending with a vowel sound: " + ((double) ((int) (((double) vowelEndingCount / totalCount)*10000))) / 100 + "%");
 
