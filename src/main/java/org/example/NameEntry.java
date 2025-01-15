@@ -26,12 +26,12 @@ public class NameEntry {
         char lastChar = Character.toLowerCase(name.charAt(name.length() - 1));
 
         if (lastChar == 'e' && !lowerName.endsWith("ie")) {
-            NameReader.fakeVowelSoundCount++;
+            NameReader.addFakeVowelSound();
             //System.out.println("Found names ending with a fake vowel: " + name + " with " + occurrences + " occurrences.");
             return false;
         }
 
-        return lastChar == 'a' || lastChar == 'e' || lastChar == 'i' || lastChar == 'o' || lastChar == 'u';
+        return lastChar == 'a' || lastChar == 'e' || lastChar == 'i' || lastChar == 'o' || lastChar == 'u' || lastChar == 'y';
     }
 
 

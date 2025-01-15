@@ -14,8 +14,82 @@ public class NameReader {
     public static List<Integer> years = new ArrayList<>();
     public static TreeMap<Integer, List<NameEntry>> yearVowelSoundCounts = new TreeMap<>();
     public static int year = 1879;
-    public static long fakeVowelSoundCount = 0;
+    private static long fakeVowelSoundCount = 0;
     public static List<NameEntry> nameEntries = new ArrayList<>();
+    public static List<NameEntry> vowelNameEntries = new ArrayList<>();
+    private static List<NameEntry> fmVowelNameEntries = new ArrayList<>();
+    private static List<NameEntry> mlVowelNameEntries = new ArrayList<>();
+    private static List<NameEntry> topFNames = new ArrayList<>();
+    private static List<NameEntry> topMNames = new ArrayList<>();
+    public static void addFakeVowelSound() {
+        fakeVowelSoundCount++;
+    }
+
+    public static void main(String[] args) {
+        String folderPath = "src/main/resources/names";
+        initYears();
+
+        try {
+            Files.list(Paths.get(folderPath)).forEach(filePath -> {
+                year++;
+                if (Files.isRegularFile(filePath)) {
+                    // Read the file and store entries by year
+                    nameEntries = readNameFile(filePath.toString(), year);
+                    count(nameEntries);
+                }
+            });
+
+        } catch (IOException e) {
+            System.err.println("Error reading files from folder: " + e.getMessage());
+        }
+
+        printResults();
+
+        /*
+        System.out.println("Occurrences by Year (female):");
+
+        yearVowelSoundCounts.forEach((year, entries) -> {
+            // Filter entries ending with a vowel sound and sort by occurrences in descending order
+            List<NameEntry> topVowelEndingNames = entries.stream()
+                    .filter(NameEntry::endsWithVowelSound)
+                    .filter(NameEntry::isFemale)
+                    .sorted(Comparator.comparingInt(NameEntry::getOccurrences).reversed())
+                    .limit(3)  // Limit to top 3
+                    .toList();
+
+            System.out.println("Year " + year + ":");
+
+            if (topVowelEndingNames.isEmpty()) {
+                System.out.println("  No names ending with a vowel sound.");
+            } else {
+                for (NameEntry entry : topVowelEndingNames) {
+                    System.out.println("  " + entry.getName() + " - " + entry.getOccurrences() + " occurrences");
+                }
+            }
+        });
+        */
+    }
+
+    private static void countTopNames() {
+        int topCount = 0;
+        int secondCount = 0;
+        int thirdCount = 0;
+        for (NameEntry entry : fmVowelNameEntries) {
+
+        }
+    }
+
+    private static void printResults() {
+        double vowelCountAsPercent = (double) Math.round(((double) vowelEndingCount / totalCount) * 10000) / 100;
+        double fm = (double) Math.round(((double) femaleNamesCount / vowelEndingCount) * 10000) / 100;
+        double ml = (double) Math.round(((double) (vowelEndingCount - femaleNamesCount) / vowelEndingCount) * 10000) / 100;
+        System.out.println("Total name occurrences counted: " + totalCount);
+        System.out.println("Total occurrences of names ending with a vowel sound across all years: " + vowelEndingCount);
+        System.out.println("Percentage of all names that end with a vowel sound: " + vowelCountAsPercent + "%");
+        System.out.println("Of the names that end with a vowel sound, " + fm + "% are female and " + ml + "% are male");
+        System.out.println("Top Male Names are:");
+        System.out.println("Top Female Names are:");
+    }
 
     public static List<NameEntry> readNameFile(String fileName, int year) {
         List<NameEntry> nameEntries = new ArrayList<>();
@@ -45,10 +119,14 @@ public class NameReader {
 
     private static void totalVowelCount(NameEntry entry) {
         if (entry.endsWithVowelSound() && entry.isFemale()) {
+            vowelNameEntries.add(entry);
+            fmVowelNameEntries.add(entry);
             vowelEndingCount += entry.getOccurrences();
             totalCount += entry.getOccurrences();
             femaleNamesCount += entry.getOccurrences();
         } else if (entry.endsWithVowelSound()) {
+            vowelNameEntries.add(entry);
+            mlVowelNameEntries.add(entry);
             vowelEndingCount += entry.getOccurrences();
             totalCount += entry.getOccurrences();
         } else {
@@ -68,45 +146,5 @@ public class NameReader {
         }
     }
 
-    public static void main(String[] args) {
-        String folderPath = "src/main/resources/names";
-        initYears();
 
-        try {
-            Files.list(Paths.get(folderPath)).forEach(filePath -> {
-                year++;
-                if (Files.isRegularFile(filePath)) {
-                    // Read the file and store entries by year
-                    nameEntries = readNameFile(filePath.toString(), year);
-                    count(nameEntries);
-                }
-            });
-
-        } catch (IOException e) {
-            System.err.println("Error reading files from folder: " + e.getMessage());
-        }
-
-        System.out.println("Total name occurrences counted: " + totalCount);
-        System.out.println("Total occurrences of names ending with a vowel sound across all years: " + vowelEndingCount);
-
-        System.out.println("Occurrences by Year:");
-        yearVowelSoundCounts.forEach((year, entries) -> {
-            // Filter entries ending with a vowel sound and sort by occurrences in descending order
-            List<NameEntry> topVowelEndingNames = entries.stream()
-                    .filter(NameEntry::endsWithVowelSound)
-                    .sorted(Comparator.comparingInt(NameEntry::getOccurrences).reversed())
-                    .limit(3)  // Limit to top 3
-                    .toList();
-
-            System.out.println("Year " + year + ":");
-
-            if (topVowelEndingNames.isEmpty()) {
-                System.out.println("  No names ending with a vowel sound.");
-            } else {
-                for (NameEntry entry : topVowelEndingNames) {
-                    System.out.println("  " + entry.getName() + " - " + entry.getOccurrences() + " occurrences");
-                }
-            }
-        });
-    }
 }
