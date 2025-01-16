@@ -9,7 +9,7 @@ public class NameEntry {
 
     private String name;
     private final Gender gender;
-    private final int occurrences;
+    private int occurrences;
     private int year;
 
 
@@ -42,6 +42,10 @@ public class NameEntry {
 
     public boolean isFemale() {
         return this.gender == Gender.F;
+    }
+
+    public void addOccurrences(int add) {
+        occurrences += add;
     }
 }
 

@@ -21,6 +21,7 @@ public class NameReader {
     private static List<NameEntry> mlVowelNameEntries = new ArrayList<>();
     private static List<NameEntry> topFNames = new ArrayList<>();
     private static List<NameEntry> topMNames = new ArrayList<>();
+    private static List<NameEntry> combinedEntries = new ArrayList<>();
     public static void addFakeVowelSound() {
         fakeVowelSoundCount++;
     }
@@ -42,7 +43,8 @@ public class NameReader {
         } catch (IOException e) {
             System.err.println("Error reading files from folder: " + e.getMessage());
         }
-
+        combineSameNames();
+        countTopNames();
         printResults();
 
         /*
@@ -69,13 +71,45 @@ public class NameReader {
         });
         */
     }
+    private static void combineSameNames() {
+        for (int i = 0; i < vowelNameEntries.size(); i++) {
+            String name = vowelNameEntries.get(i).getName();
+            for (int j = 0; j < vowelNameEntries.size(); j++) {
+                if (name.equals(vowelNameEntries.get(j).getName()) && vowelNameEntries.get(j) != vowelNameEntries.get(i)) {
+                    System.out.println("Combining " + vowelNameEntries.get(i) + " and " + vowelNameEntries.get(j));
+                    vowelNameEntries.get(i).addOccurrences(vowelNameEntries.get(j).getOccurrences());
+
+                    vowelNameEntries.remove(vowelNameEntries.get(j));
+                } else if (vowelNameEntries.get(j) == vowelNameEntries.get(i)) {
+                    System.out.println("Entries are the same, skipping");
+                }
+            }
+        }
+    }
 
     private static void countTopNames() {
         int topCount = 0;
         int secondCount = 0;
         int thirdCount = 0;
-        for (NameEntry entry : fmVowelNameEntries) {
 
+        for (NameEntry entry : fmVowelNameEntries) {
+            if (topFNames.size() == 3) {
+                System.out.println("Top Three so far\n" + topFNames.getFirst() + "\n" + topFNames.get(1) + "\n" + topFNames.getLast());
+            }
+                if (entry.getOccurrences() > topCount) {
+                    thirdCount = secondCount;
+                    secondCount = topCount;
+                    topCount = entry.getOccurrences();
+                    topFNames.addFirst(entry);
+                } else if (entry.getOccurrences() > secondCount) {
+                    thirdCount = secondCount;
+                    secondCount = entry.getOccurrences();
+                    topFNames.add(1, entry);
+                } else if (entry.getOccurrences() > thirdCount) {
+                    thirdCount = entry.getOccurrences();
+                    topFNames.removeLast();
+                    topFNames.addLast(entry);
+                }
         }
     }
 
