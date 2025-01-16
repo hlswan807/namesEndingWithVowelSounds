@@ -71,21 +71,30 @@ public class NameReader {
         });
         */
     }
-    private static void combineSameNames() {
-        for (int i = 0; i < vowelNameEntries.size(); i++) {
-            String name = vowelNameEntries.get(i).getName();
-            for (int j = 0; j < vowelNameEntries.size(); j++) {
-                if (name.equals(vowelNameEntries.get(j).getName()) && vowelNameEntries.get(j) != vowelNameEntries.get(i)) {
-                    System.out.println("Combining " + vowelNameEntries.get(i) + " and " + vowelNameEntries.get(j));
-                    vowelNameEntries.get(i).addOccurrences(vowelNameEntries.get(j).getOccurrences());
+    /*
+    name  jerry
+    jerry
 
-                    vowelNameEntries.remove(vowelNameEntries.get(j));
-                } else if (vowelNameEntries.get(j) == vowelNameEntries.get(i)) {
-                    System.out.println("Entries are the same, skipping");
-                }
+
+     */
+    private static void combineSameNames() {
+        Map<String, NameEntry> nameMap = new HashMap<>();
+
+        // Combine occurrences for entries with the same name
+        for (NameEntry entry : vowelNameEntries) {
+            String name = entry.getName();
+            if (nameMap.containsKey(name)) {
+                nameMap.get(name).addOccurrences(entry.getOccurrences());
+            } else {
+                nameMap.put(name, entry);
             }
         }
+
+        // Update the vowelNameEntries list with the combined values
+        vowelNameEntries.clear();
+        vowelNameEntries.addAll(nameMap.values());
     }
+
 
     private static void countTopNames() {
         int topCount = 0;
@@ -137,7 +146,7 @@ public class NameReader {
                     Gender gender = Gender.valueOf(parts[1]);
                     int occurrences = Integer.parseInt(parts[2]);
 
-                    NameEntry entry = new NameEntry(name, gender, occurrences, year);
+                    NameEntry entry = new NameEntry(name, occurrences, gender, year);
                     nameEntries.add(entry);
 
                     // Add the entry to the yearVowelSoundCounts TreeMap

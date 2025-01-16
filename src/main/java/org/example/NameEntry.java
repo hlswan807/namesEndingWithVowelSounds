@@ -14,7 +14,7 @@ public class NameEntry {
 
 
 
-    public NameEntry(String name, Gender gender, int occurrences, int y) {
+    public NameEntry(String name, int occurrences, Gender gender, int y) {
         this.name = name;
         this.gender = gender;
         this.occurrences = occurrences;
