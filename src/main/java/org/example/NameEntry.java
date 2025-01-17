@@ -34,18 +34,17 @@ public class NameEntry {
         return lastChar == 'a' || lastChar == 'e' || lastChar == 'i' || lastChar == 'o' || lastChar == 'u' || lastChar == 'y';
     }
 
-
-    @Override
-    public String toString() {
-        return "NameEntry{name='" + name + "', gender=" + gender + ", occurrences=" + occurrences + '}';
-    }
-
     public boolean isFemale() {
         return this.gender == Gender.F;
     }
 
     public void addOccurrences(int add) {
         occurrences += add;
+    }
+    @Override
+    public String toString() {
+        return name + " - " + occurrences + " occurrences, " + gender;
+        //return "NameEntry{name='" + name + "', gender=" + gender + ", occurrences=" + occurrences + '}';
     }
 }
 
