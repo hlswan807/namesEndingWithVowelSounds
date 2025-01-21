@@ -26,8 +26,6 @@ public class NameEntry {
         char lastChar = Character.toLowerCase(name.charAt(name.length() - 1));
 
         if (lastChar == 'e' && !lowerName.endsWith("ie")) {
-            NameReader.addFakeVowelSound();
-            //System.out.println("Found names ending with a fake vowel: " + name + " with " + occurrences + " occurrences.");
             return false;
         }
 

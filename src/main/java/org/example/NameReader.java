@@ -1,7 +1,7 @@
 package org.example;
 
 import java.io.BufferedReader;
-import java.io.Console;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,28 +9,25 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class NameReader {
-    public static long vowelEndingCount;
-    public static long totalCount;
-    public static long femaleNamesCount;
-    public static List<Integer> years = new ArrayList<>();
-    public static TreeMap<Integer, List<NameEntry>> yearVowelSoundCounts = new TreeMap<>();
-    public static int year = 1879;
-    private static long fakeVowelSoundCount = 0;
-    public static List<NameEntry> nameEntries = new ArrayList<>();
-    public static List<NameEntry> vowelNameEntries = new ArrayList<>();
+    private static long vowelEndingCount;
+    private static long totalCount;
+    private static long femaleNamesCount;
+    private static final List<Integer> years = new ArrayList<>();
+    private static final TreeMap<Integer, List<NameEntry>> yearVowelSoundCounts = new TreeMap<>();
+    private static int year = 1879;
+    private static List<NameEntry> nameEntries = new ArrayList<>();
+    private static final List<NameEntry> vowelNameEntries = new ArrayList<>();
     private static final List<NameEntry> fmVowelNameEntries = new ArrayList<>();
     private static final List<NameEntry> mlVowelNameEntries = new ArrayList<>();
     private static final List<NameEntry> topFNames = new ArrayList<>();
     private static final List<NameEntry> topMNames = new ArrayList<>();
     private static final Map<String, List<NameEntry>> fmYearlyTopNames = new HashMap<>();
-    private static Map<String, List<NameEntry>> mlYearlyTopNames = new HashMap<>();
+    private static final Map<String, List<NameEntry>> mlYearlyTopNames = new HashMap<>();
     private static final Map<String, NameEntry> yearNameMap = new HashMap<>();
-    private static Map<String, NameEntry> nameMap = new HashMap<>(); // Map to store unique (name, gender) pairs and their corresponding NameEntry
+    private static final Map<String, NameEntry> nameMap = new HashMap<>(); // Map to store unique (name, gender) pairs and their corresponding NameEntry
     private static int percentComplete = 0;
     private static int a;
-    public static void addFakeVowelSound() {
-        fakeVowelSoundCount++;
-    }
+
 
     public static void updatePercentComplete() {
         a++;
@@ -146,7 +143,7 @@ public class NameReader {
                     updatePercentComplete();
 
                     // Add the entry to the yearVowelSoundCounts TreeMap
-                    yearVowelSoundCounts.computeIfAbsent(year, k -> new ArrayList<>()).add(entry);
+                    yearVowelSoundCounts.computeIfAbsent(year, _ -> new ArrayList<>()).add(entry);
                 }
             }
         } catch (IOException e) {
@@ -201,10 +198,7 @@ public class NameReader {
 
         for (NameEntry entry : fmVowelNameEntries) {
             updatePercentComplete();
-            if (topFNames.size() == 3) {
-                //System.out.println("Top Three so far\n" + topFNames.getFirst() + "\n" + topFNames.get(1) + "\n" + topFNames.getLast());
-            }
-                if (entry.getOccurrences() > topCount) {
+            if (entry.getOccurrences() > topCount) {
                     thirdCount = secondCount;
                     secondCount = topCount;
                     topCount = entry.getOccurrences();
@@ -325,15 +319,10 @@ public class NameReader {
     }
 
     public static void initYears() {
-
         for (int i = 1880; i < 2024; i++) {
             years.add(i);
             updatePercentComplete();
         }
 
-    }
-
-    public static void setNameMap(Map<String, NameEntry> nameMap) {
-        NameReader.nameMap = nameMap;
     }
 }
