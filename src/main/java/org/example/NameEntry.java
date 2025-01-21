@@ -38,6 +38,10 @@ public class NameEntry {
         return this.gender == Gender.F;
     }
 
+    public boolean isMale() {
+        return this.gender == Gender.M;
+    }
+
     public void addOccurrences(int add) {
         occurrences += add;
     }
