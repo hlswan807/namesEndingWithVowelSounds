@@ -1,14 +1,16 @@
 package org.example;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class NameWriter {
-    private static FileWriter fl;
+    private static final FileWriter fl;
 
     static {
         try {
-            fl = new FileWriter("/resources/data/statistics.txt");
+            String filePath = "/home/softdev/IdeaProjects/NamesThatEndWithVowelSounds/src/main/resources/data/statistics.txt";
+            fl = new FileWriter(filePath);
         } catch (IOException e) {
             System.out.println("An error reading the file location occurred");
             e.printStackTrace();
@@ -16,10 +18,17 @@ public class NameWriter {
         }
     }
 
-    private static void writeToStatistics(NameReader nameReader) throws IOException {
-        fl.write("Hello World!");
+    private static void writeToStatistics() throws IOException {
+        System.out.println("Attempting to write");
+
+        fl.write(NameReader.returnResults());
+        fl.flush();
+        fl.close();
 
     }
 
 
+    public static void start() throws IOException {
+        writeToStatistics();
+    }
 }

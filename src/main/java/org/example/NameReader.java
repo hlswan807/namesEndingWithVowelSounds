@@ -1,5 +1,8 @@
 package org.example;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.BufferedReader;
 
 import java.io.FileReader;
@@ -7,11 +10,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-
+@Getter
+@Setter
 public class NameReader {
     private static long vowelEndingCount;
     private static long totalCount;
     private static long femaleNamesCount;
+    private static long maleNamesCount;
     private static final List<Integer> years = new ArrayList<>();
     private static final TreeMap<Integer, List<NameEntry>> yearVowelSoundCounts = new TreeMap<>();
     private static int year = 1879;
@@ -24,9 +29,15 @@ public class NameReader {
     private static final Map<String, List<NameEntry>> fmYearlyTopNames = new HashMap<>();
     private static final Map<String, List<NameEntry>> mlYearlyTopNames = new HashMap<>();
     private static final Map<String, NameEntry> yearNameMap = new HashMap<>();
-    private static final Map<String, NameEntry> nameMap = new HashMap<>(); // Map to store unique (name, gender) pairs and their corresponding NameEntry
+    private static final Map<String, NameEntry> nameMap = new HashMap<>();// Map to store unique (name, gender) pairs and their corresponding NameEntry
+    private static final Map<NameEntry, Double> percentageOfTotal = new HashMap<>();
     private static int percentComplete = 0;
     private static int a;
+    private static double vowelCountAsPercent;
+    private static double fm;
+    private static double ml;
+
+
 
 
     public static void updatePercentComplete() {
@@ -37,7 +48,16 @@ public class NameReader {
         }
     }
 
-    public static void main(String[] args) {
+    private static void mapPercentageOfTotal() {
+        for (NameEntry nameEntry : fmVowelNameEntries) {
+            percentageOfTotal.put(nameEntry, (double) Math.round(((double) nameEntry.getOccurrences() / femaleNamesCount) * 1000000) / 10000);
+        }
+        for (NameEntry nameEntry : mlVowelNameEntries) {
+            percentageOfTotal.put(nameEntry, (double) Math.round(((double) nameEntry.getOccurrences() / maleNamesCount) * 1000000) / 10000);
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
         String folderPath = "src/main/resources/names";
         initYears();
 
@@ -61,13 +81,20 @@ public class NameReader {
         getNamesByYear();
         combineSameNames();
         countTopNames();
+        mapPercentageOfTotal();
         printResults();
+        NameWriter.start();
         search();
 
 
 
 
+
     }
+
+
+
+
 
     private static void getNamesByYear() {
         yearVowelSoundCounts.forEach((year, entries) -> {
@@ -236,17 +263,40 @@ public class NameReader {
     }
 
     private static void printResults() {
-        double vowelCountAsPercent = (double) Math.round(((double) vowelEndingCount / totalCount) * 10000) / 100;
-        double fm = (double) Math.round(((double) femaleNamesCount / vowelEndingCount) * 10000) / 100;
-        double ml = (double) Math.round(((double) (vowelEndingCount - femaleNamesCount) / vowelEndingCount) * 10000) / 100;
+        vowelCountAsPercent = (double) Math.round(((double) vowelEndingCount / totalCount) * 10000) / 100;
+        fm = (double) Math.round(((double) femaleNamesCount / vowelEndingCount) * 10000) / 100;
+        ml = (double) Math.round(((double) (vowelEndingCount - femaleNamesCount) / vowelEndingCount) * 10000) / 100;
+
+
         System.out.println("Total name occurrences counted: " + totalCount);
         System.out.println("Total occurrences of names ending with a vowel sound across all years: " + vowelEndingCount);
         System.out.println("Percentage of all names that end with a vowel sound: " + vowelCountAsPercent + "%");
         System.out.println("Of the names that end with a vowel sound, " + fm + "% are female and " + ml + "% are male");
         System.out.println("Top Male Names are:");
-        System.out.println(topMNames.getFirst() + "\n" + topMNames.get(1) + "\n" + topMNames.getLast());
+        String s = "% of all male names";
+        String t = "% of all female names";
+        System.out.println(topMNames.getFirst() + " - " + percentageOfTotal.get(topMNames.getFirst()) + s + "\n" + topMNames.get(1) + " - " + percentageOfTotal.get(topMNames.get(1)) + s + "\n" + topMNames.getLast() + " - " + percentageOfTotal.get(topMNames.getLast()) + s);
         System.out.println("Top Female Names are:");
-        System.out.println(topFNames.getFirst() + "\n" + topFNames.get(1) + "\n" + topFNames.getLast());
+        System.out.println(topFNames.getFirst() + " - " + percentageOfTotal.get(topFNames.getFirst()) + t + "\n" + topFNames.get(1) + " - " + percentageOfTotal.get(topFNames.get(1)) + t + "\n" + topFNames.getLast() + " - " + percentageOfTotal.get(topFNames.getLast()) + t);
+    }
+
+    private static String returnPercentageOfTotal(NameEntry entry) {
+        if (entry.isFemale()) {
+            return " - " + percentageOfTotal.get(entry) + "% of all female names";
+        } else {
+            return " - " + percentageOfTotal.get(entry) + "% of all male names";
+        }
+    }
+
+    static String returnResults() {
+        return "Total name occurrences counted: " + totalCount + "\n"
+        + "\nTotal occurrences of names ending with a vowel sound across all years: " + vowelEndingCount
+        + "\nPercentage of all names that end with a vowel sound: " + vowelCountAsPercent + "%"
+        + "\nOf the names that end with a vowel sound, " + fm + "% are female and " + ml + "% are male"
+        + "\nTop Male Names are:\n"
+        + topMNames.getFirst() + "\n" + topMNames.get(1) + "\n" + topMNames.getLast()
+        + "\nTop Female Names are:\n"
+        + topFNames.getFirst() + "\n" + topFNames.get(1) + "\n" + topFNames.getLast();
     }
 
     private static void search() {
@@ -264,13 +314,13 @@ public class NameReader {
                 if (name.endsWith("M")) {
                     for (NameEntry entry : mlYearlyTopNames.get(name)) {
                         count++;
-                        System.out.println(count + ". " + entry);
+                        System.out.println(count + ". " + entry + returnPercentageOfTotal(entry));
                     }
                     count = 0;
                 } else if (name.endsWith("F")) {
                     for (NameEntry entry : fmYearlyTopNames.get(name)) {
                         count++;
-                        System.out.println(count + ". " + entry);
+                        System.out.println(count + ". " + entry + returnPercentageOfTotal(entry));
                     }
                     count = 0;
                 } else {
@@ -306,6 +356,7 @@ public class NameReader {
             mlVowelNameEntries.add(entry);
             vowelEndingCount += entry.getOccurrences();
             totalCount += entry.getOccurrences();
+            maleNamesCount += entry.getOccurrences();
         } else {
             totalCount += entry.getOccurrences();
         }

@@ -1,0 +1,13 @@
+Total name occurrences counted: 368636238
+
+Total occurrences of names ending with a vowel sound across all years: 136610504
+Percentage of all names that end with a vowel sound: 37.06%
+Of the names that end with a vowel sound, 77.69% are female and 22.31% are male
+Top Male Names are:
+Anthony - 1475541 occurrences, M
+Joshua - 1238699 occurrences, M
+Jerry - 614527 occurrences, M
+Top Female Names are:
+Mary - 4136872 occurrences, F
+Patricia - 1573241 occurrences, F
+Laura - 800088 occurrences, F
