@@ -9,10 +9,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Time;
 import java.util.*;
 @Getter
 @Setter
 public class NameReader {
+    private static long startTime;
+    private static long endTime;
+
+
     private static long vowelEndingCount;
     private static long totalCount;
     private static long femaleNamesCount;
@@ -40,13 +45,7 @@ public class NameReader {
 
 
 
-    public static void updatePercentComplete() {
-        a++;
-        if (a % 61000 == 0) {
-            percentComplete++;
-            System.out.println(percentComplete + "% Complete");
-        }
-    }
+
 
     private static void mapPercentageOfTotal() {
         for (NameEntry nameEntry : fmVowelNameEntries) {
@@ -59,6 +58,7 @@ public class NameReader {
 
     public static void main(String[] args) throws IOException {
         String folderPath = "src/main/resources/names";
+        startTime = System.currentTimeMillis();
         initYears();
 
         try {
@@ -83,13 +83,19 @@ public class NameReader {
         countTopNames();
         mapPercentageOfTotal();
         printResults();
+        endTime = System.currentTimeMillis();
         //NameWriter.start();
+        printTimeToRun();
         search();
 
 
 
 
 
+    }
+    private static void printTimeToRun() {
+        long tPassed = -(startTime - endTime);
+        System.out.println("Time to run " + tPassed +  " milliseconds");
     }
 
 
@@ -110,44 +116,29 @@ public class NameReader {
             if (topVowelEndingNames.isEmpty()) {
                 System.out.println("  No names ending with a vowel sound.");
             } else {
-                int count = 0;
-                List<NameEntry> temp = new ArrayList<>();
+                int countM = 0;
+                int countF = 0;
+                List<NameEntry> tempF = new ArrayList<>();
+                List<NameEntry> tempM = new ArrayList<>();
                 for (NameEntry entry : topVowelEndingNames) {
-                    temp.add(entry);
-                    if (count % 11 == 0) {
-                        fmYearlyTopNames.put(year.toString() + "_F", temp);
-                        temp.clear();
+                    if (entry.isFemale()) {
+                        tempF.add(entry);
+                        countF++;
+                    } else {
+                        tempM.add(entry);
+                        countM++;
+                    }
+                    if (countM % 11 == 0) {
+                        mlYearlyTopNames.put(year.toString() + "_M", tempM);
+                        tempM.clear();
+                    }
+                    if (countF % 11 == 0) {
+                        fmYearlyTopNames.put(year.toString() + "_F", tempM);
+                        tempF.clear();
                     }
 
 
-                    count++;
-                }
-            }
-        });
-        yearVowelSoundCounts.forEach((year, entries) -> {
-            List<NameEntry> topVowelEndingNames = entries.stream()
-                    .filter(NameEntry::endsWithVowelSound)
-                    .filter(NameEntry::isMale)
-                    .sorted(Comparator.comparingInt(NameEntry::getOccurrences).reversed())
-                    .limit(11)
-                    .toList();
 
-
-            if (topVowelEndingNames.isEmpty()) {
-                System.out.println("  No names ending with a vowel sound.");
-            } else {
-                int count = 0;
-                List<NameEntry> temp = new ArrayList<>();
-                for (NameEntry entry : topVowelEndingNames) {
-                    updatePercentComplete();
-                    temp.add(entry);
-                    if (count % 11 == 0) {
-                        mlYearlyTopNames.put(year.toString() + "_M", temp);
-                        temp.clear();
-                    }
-
-
-                    count++;
                 }
             }
         });
@@ -167,7 +158,7 @@ public class NameReader {
 
                     NameEntry entry = new NameEntry(name, occurrences, gender, year);
                     nameEntries.add(entry);
-                    updatePercentComplete();
+
 
                     // Add the entry to the yearVowelSoundCounts TreeMap
                     yearVowelSoundCounts.computeIfAbsent(year, _ -> new ArrayList<>()).add(entry);
@@ -180,12 +171,10 @@ public class NameReader {
         return nameEntries;
     }
 
-
-
     private static void combineSameNames() {
         // Iterate through the list and merge entries with the same name, gender and year
         for (NameEntry entry : vowelNameEntries) {
-            updatePercentComplete();
+
             // Create a composite key using both name and gender
             String key = entry.getName() + "_" + entry.getGender() + "_" + entry.getYear();
             String shortKey = entry.getName() + "_" + entry.getGender();
@@ -224,7 +213,7 @@ public class NameReader {
         int thirdCount = 0;
 
         for (NameEntry entry : fmVowelNameEntries) {
-            updatePercentComplete();
+
             if (entry.getOccurrences() > topCount) {
                     thirdCount = secondCount;
                     secondCount = topCount;
@@ -244,7 +233,7 @@ public class NameReader {
         secondCount = 0;
         thirdCount = 0;
         for (NameEntry entry : mlVowelNameEntries) {
-            updatePercentComplete();
+
             if (entry.getOccurrences() > topCount) {
                 thirdCount = secondCount;
                 secondCount = topCount;
@@ -364,7 +353,7 @@ public class NameReader {
 
     private static void count(List<NameEntry> nameEntries) {
         for (NameEntry entry : nameEntries) {
-            updatePercentComplete();
+
             totalVowelCount(entry);
         }
     }
@@ -372,7 +361,7 @@ public class NameReader {
     public static void initYears() {
         for (int i = 1880; i < 2024; i++) {
             years.add(i);
-            updatePercentComplete();
+
         }
 
     }
