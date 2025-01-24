@@ -71,12 +71,6 @@ public class NameReader {
         });
         */
     }
-    /*
-    name  jerry
-    jerry
-
-
-     */
     private static void combineSameNames() {
         Map<String, NameEntry> nameMap = new HashMap<>();
 
