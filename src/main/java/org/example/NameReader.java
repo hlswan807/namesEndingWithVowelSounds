@@ -83,7 +83,7 @@ public class NameReader {
         countTopNames();
         mapPercentageOfTotal();
         printResults();
-        NameWriter.start();
+        //NameWriter.start();
         search();
 
 
