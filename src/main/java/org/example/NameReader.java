@@ -272,12 +272,16 @@ public class NameReader {
         System.out.println("Total occurrences of names ending with a vowel sound across all years: " + vowelEndingCount);
         System.out.println("Percentage of all names that end with a vowel sound: " + vowelCountAsPercent + "%");
         System.out.println("Of the names that end with a vowel sound, " + fm + "% are female and " + ml + "% are male");
-        System.out.println("Top Male Names are:");
-        String s = "% of all male names";
-        String t = "% of all female names";
-        System.out.println(topMNames.getFirst() + " - " + percentageOfTotal.get(topMNames.getFirst()) + s + "\n" + topMNames.get(1) + " - " + percentageOfTotal.get(topMNames.get(1)) + s + "\n" + topMNames.getLast() + " - " + percentageOfTotal.get(topMNames.getLast()) + s);
-        System.out.println("Top Female Names are:");
-        System.out.println(topFNames.getFirst() + " - " + percentageOfTotal.get(topFNames.getFirst()) + t + "\n" + topFNames.get(1) + " - " + percentageOfTotal.get(topFNames.get(1)) + t + "\n" + topFNames.getLast() + " - " + percentageOfTotal.get(topFNames.getLast()) + t);
+        printTopNames(5);
+    }
+
+    private static void printTopNames(int numNamesPrinted) {
+        for (int i = 0; i < numNamesPrinted; i++) {
+            System.out.println(topMNames.get(i) + " - " + percentageOfTotal.get(topMNames.get(i)) + "%");
+        }
+        for (int i = 0; i < numNamesPrinted; i++) {
+            System.out.println(topFNames.get(i) + " - " + percentageOfTotal.get(topFNames.get(i)) + "%");
+        }
     }
 
     private static String returnPercentageOfTotal(NameEntry entry) {
