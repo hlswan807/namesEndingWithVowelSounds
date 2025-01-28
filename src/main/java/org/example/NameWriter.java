@@ -5,8 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class NameWriter {
-    private static final FileWriter fl;
-
+    //private static final FileWriter fl;
+    /*
     static {
         try {
             String filePath = "/home/softdev/IdeaProjects/NamesThatEndWithVowelSounds/src/main/resources/data/statistics.txt";
@@ -16,19 +16,20 @@ public class NameWriter {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-    }
+        */
+   // }
 
-    private static void writeToStatistics() throws IOException {
-        System.out.println("Attempting to write");
+    //private static void writeToStatistics() throws IOException {
+        //System.out.println("Attempting to write");
 
-        fl.write(NameReader.returnResults());
-        fl.flush();
-        fl.close();
+        //fl.write(NameReader.returnResults());
+        //fl.flush();
+        //fl.close();
 
-    }
+   // }
 
 
-    public static void start() throws IOException {
-        writeToStatistics();
-    }
+    //public static void start() throws IOException {
+        //writeToStatistics();
+    //}
 }
