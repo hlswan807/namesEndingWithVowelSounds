@@ -11,6 +11,7 @@ public class NameEntry {
     private final Gender gender;
     private int occurrences;
     private int year;
+    private int place;
 
 
 
@@ -19,6 +20,7 @@ public class NameEntry {
         this.gender = gender;
         this.occurrences = occurrences;
         year = y;
+        place = 0;
     }
 
     public boolean endsWithVowelSound() {
@@ -45,7 +47,7 @@ public class NameEntry {
     }
     @Override
     public String toString() {
-        return name + " - " + occurrences + " occurrences, " + gender;
+        return name + " - " + occurrences + " occurrences, " + gender + " place: " + place + "year: " + year;
         //return "NameEntry{name='" + name + "', gender=" + gender + ", occurrences=" + occurrences + '}';
     }
 }
